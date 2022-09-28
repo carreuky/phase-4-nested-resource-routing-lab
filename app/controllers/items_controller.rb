@@ -17,14 +17,23 @@ class ItemsController < ApplicationController
   end
 
   def create
-    review = Item.create(user_params)
-    render json: review, status: :created
+    if params[:user_id]
+      user=User.find(params[:user_id])
+      items=user.items.create(items_params)
+    else
+    items = Item.create(items_params)
+    end
+    render json: items, status: :created
   end
 
   private
 
   def user_params
     params.permit(:username, :city)
+  end
+
+  def items_params
+    params.permit(:name, :description, :price)
   end
 
   def render_not_found_response
